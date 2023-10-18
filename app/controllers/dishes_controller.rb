@@ -5,38 +5,39 @@ class DishesController < ApplicationController
   def index
     if @current_user.type == "Owner"
       dishes = selected_restaurant.dishes.all
-      return render json: {message:"Restaurants have no dishes added"} if dishes.nil?
-      render json: {message: "Your Restaurant Dishes", data: dishes}
+      return render json: {message:"Restaurants have no dishes added"}, status: :no_content if dishes.nil?
+      render json: {message: "Your Restaurant Dishes", data: dishes}, status: :ok
     else
-      render json: Dish.all
+      render json: Dish.all, status: :ok
     end
   end
 
   def create
     dish = selected_restaurant.dishes.new(set_params)
-    return render json: {message:"User's dish Created", data: dish} if dish.save
-    render json: {errors: dish.errors.full_messages}
+    return render json: {message:"User's dish Created", data: dish}, status: :created if dish.save
+    render json: {errors: dish.errors.full_messages}, status: :unprocessable_entity
   end
 
   def show
+    # byebug
     dish =  if @current_user.type == "Owner"
               selected_dish
             else
               Dish.find_by_id(params[:id])
             end
-    render json: {message:"Here is your choosen dish", data: dish}
+    render json: {message:"Here is your choosen dish", data: dish}, status: :ok
   end
 
   def update
     dish = selected_dish
-    return render json: {message:"Updated dish", data: dish} if dish.update(set_params)
-    render json: {errors: dish.errors.full_messages}
+    return render json: {message:"Updated dish", data: dish}, status: :ok if dish.update(set_params)
+    render json: {errors: dish.errors.full_messages}, status: :unprocessable_entity
   end
 
   def destroy
     dish = selected_dish
-    return render json: {message: "dish deleted succesfully"} if dish.destroy
-    render json: {message: "dish doesn't deleted succesfully"}
+    return render json: {message: "dish deleted succesfully"}, status: :ok if dish.destroy
+    render json: {message: "dish doesn't deleted succesfully"}, status: :ok
   end
 
   def search

@@ -1,5 +1,5 @@
 class Category < ApplicationRecord
   has_many :dishes
 
-  validates :name, uniqueness: true
+  validates :name, presence: true, uniqueness: true
 end

@@ -49,7 +49,7 @@ class UsersController < ApplicationController
       user.update(reset_password_token:nil, password_digest: params[:password_digest])
       render json: {message: "Password Reset Successfully"}
     else
-      render json: {message: "Invalid Token"}
+      render json: {message: "Invalid Token"}, status: :unprocessable_entity
     end
   end
 

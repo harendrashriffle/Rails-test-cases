@@ -8,15 +8,14 @@ class RestaurantsController < ApplicationController
     restaurants = restaurants.where('name LIKE ?', "%#{params[:name]}%") if params[:name].present?
     restaurants = restaurants.where(status: params[:status]) if params[:status].present?
     restaurants = restaurants.where('location LIKE ?', "%#{params[:location]}%") if params[:location].present?
-    # restaurants = restaurants.page(params[:page]).per(
     return render json: { message: 'Restaurants found', data: restaurants } if restaurants.present?
     render json: { message: 'No restaurants found' }
   end
 
   def create
     restaurant = @current_user.restaurants.new(set_params)
-    return render json: {message:"Your's Restaurant Created", data: restaurant} if restaurant.save
-    render json: {errors: restaurant.errors.full_messages}
+    return render json: {message:"Your's Restaurant Created", data: restaurant},status: :created if restaurant.save
+    render json: {errors: restaurant.errors.full_messages}, status: :unprocessable_entity
   end
 
   def show
@@ -25,19 +24,18 @@ class RestaurantsController < ApplicationController
                 else
                   Restaurant.find_by(id: params[:id])
                 end
-    render json: {message: "Here is your choosen retaurant",data: restaurant}
+    render json: {message: "Here is your choosen retaurant",data: restaurant},status: :ok
   end
 
   def update
     restaurant = selected_restaurant
-    return render json: {message:"Updated Restaurant", data: restaurant} if restaurant.update(set_params)
-    render json: {errors: restaurant.errors.full_messages}
+    return render json: {message:"Updated Restaurant", data: restaurant},status: :ok if restaurant.update(set_params)
+    render json: {errors: restaurant.errors.full_messages}, status: :unprocessable_entity
   end
 
   def destroy
     restaurant = selected_restaurant
-    return render json: {message: "Restaurant Deleted Succesfully"} if restaurant.destroy
-    render json: {message: "Restaurant doesn't deleted succesfully"}
+    return render json: {message: "Restaurant Deleted Succesfully"},status: :ok if restaurant.destroy
   end
 
 #----------------------------PRIVATE METHOD-------------------------------------
