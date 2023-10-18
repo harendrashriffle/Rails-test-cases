@@ -14,8 +14,8 @@ class CartItemsController < ApplicationController
     return render json: {message: "NO such dish is present"} if dish.nil?
 
     cart_items = @current_user.cart.cart_items
-    # byebug
-    unless cart_items.blank? && cart_items.first.dish.restaurant == dish.restaurant
+
+    unless cart_items.blank? || cart_items.first.dish.restaurant == dish.restaurant
       cart_items.destroy_all
     end
 
