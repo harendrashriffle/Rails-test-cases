@@ -2,13 +2,14 @@ require 'rails_helper'
 include JsonWebToken
 
 RSpec.describe "Restaurants", type: :request do
-  let!(:restaurant){ FactoryBot.create(:restaurant) }
-  let!(:user) { FactoryBot.create(:user) }
-  let(:valid_jwt) { jwt_encode(user_id: user.id) }
+
   let!(:owner) {FactoryBot.create(:user, type: 'Owner')}
+  let!(:restaurant){ FactoryBot.create(:restaurant, user_id: owner.id) }
+  let!(:user) { FactoryBot.create(:user) }
+  let!(:valid_jwt) { jwt_encode(user_id: user.id) }
 
 
-  describe 'GET /restaurants/:restaurant_id' do
+  describe 'GET /restaurants' do #index API
     it "will show specific restaurante by owner" do
       owner = FactoryBot.create(:user, type: 'Owner')
       restaurant = FactoryBot.create(:restaurant, user_id: owner.id)
@@ -30,10 +31,15 @@ RSpec.describe "Restaurants", type: :request do
       get "/restaurants?location=Rajasthan", headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: user.id)}" }
       expect(response).to have_http_status(:ok)
     end
+
   end
 
 
   describe 'POST /restaurants' do
+    it "customer not authorized" do
+      post '/restaurants',params: {name: "Syayaji", status: "Open", location: "Indore"}, headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: customer.id)}" }
+      expect(response).to have_http_status(:unauthorized)
+    end
     it "will create restaurant" do
       post '/restaurants', params: {name: "Syayaji", status: "Open", location: "Indore"}, headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: owner.id)}" }
       expect(response).to have_http_status(201)

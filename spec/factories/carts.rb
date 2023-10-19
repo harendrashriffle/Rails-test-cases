@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :cart do
-    user_id
+    user
   end
 end

@@ -18,17 +18,16 @@ class ApplicationController < ActionController::Base
       header = header.split(" ").last if header
       decoded = jwt_decode(header)
       @current_user = User.find(decoded[:user_id])
-    rescue JWT::DecodeError => e
+    rescue StandardError
        render json: { error: 'Invalid token' }, status: :unprocessable_entity
     end
-    rescue ActiveRecord::RecordNotFound
-      render json: "No record found.."
   end
 
   #------------------OWNER HAS RIGHT TO------------------
     def owner_has_right_to
+      # byebug
       unless @current_user.type == "Owner"
-        render json: {message: "Customer's don't have the access"}
+        render json: {message: "Customer's don't have the access"}, status: :unauthorized
       end
     end
 

@@ -3,7 +3,7 @@ class Restaurant < ApplicationRecord
   has_many :dishes, dependent: :destroy
   has_one_attached :image
 
-  validates :name, uniqueness: {case_sensitive: false}, presence: true
+  validates :name, presence: true #uniqueness: {case_sensitive: false}
   validates :location, presence: true
   validates :status, inclusion: { in: ['Open', 'Closed'] }
 end

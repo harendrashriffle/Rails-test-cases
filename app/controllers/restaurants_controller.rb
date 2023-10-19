@@ -8,8 +8,8 @@ class RestaurantsController < ApplicationController
     restaurants = restaurants.where('name LIKE ?', "%#{params[:name]}%") if params[:name].present?
     restaurants = restaurants.where(status: params[:status]) if params[:status].present?
     restaurants = restaurants.where('location LIKE ?', "%#{params[:location]}%") if params[:location].present?
-    return render json: { message: 'Restaurants found', data: restaurants } if restaurants.present?
-    render json: { message: 'No restaurants found' }
+    return render json: { message: 'Restaurants found', data: restaurants }, status: :ok if restaurants.present?
+    render json: { message: 'No restaurants found' }, status: :not_found
   end
 
   def create
