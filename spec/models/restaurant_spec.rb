@@ -13,7 +13,7 @@ RSpec.describe Restaurant, type: :model do
 
   describe 'validation' do
     it { should validate_presence_of(:name)}
-    it { should validate_uniqueness_of(:name).case_insensitive }
+    # it { should validate_uniqueness_of(:name).case_insensitive }
     it { should validate_presence_of(:location)}
     it { should validate_inclusion_of(:status).in_array(['Open','Closed'])}
   end

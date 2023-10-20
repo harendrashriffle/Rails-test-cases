@@ -37,7 +37,7 @@ class DishesController < ApplicationController
   def destroy
     dish = selected_dish
     return render json: {message: "dish deleted succesfully"}, status: :ok if dish.destroy
-    render json: {message: "dish doesn't deleted succesfully"}, status: :ok
+    render json: {message: "dish doesn't deleted succesfully"}, status: :unprocessable_entity
   end
 
   def search

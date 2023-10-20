@@ -38,19 +38,19 @@ RSpec.describe "CartItems", type: :request do
       put "/cart_items/#{cart_items.id}", params: {quantity: 5, dish_id: dish.id, cart_id: cart.id}, headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: customer.id)}" }
       expect(response).to have_http_status(:ok)
     end
-    it "will add cart_item to cart" do
+    it "not update and return error" do
       put "/cart_items/#{cart_items.id}", params: {quantity: nil, dish_id: dish.id, cart_id: cart.id}, headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: customer.id)}" }
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 
   describe "DELETE /cart_items/:cart_items_id" do
-    it "will update cart_item to cart" do
-      delete "/cart_items/#{cart_items.id}", params: {quantity: 5, dish_id: dish.id, cart_id: cart.id}, headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: customer.id)}" }
+    it "will delete cart_item from cart" do
+      delete "/cart_items/#{cart_items.id}", headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: customer.id)}" }
       expect(response).to have_http_status(:ok)
     end
-    it "will add cart_item to cart" do
-      delete "/cart_items/#{cart_items.id}", params: {quantity: nil, dish_id: dish.id, cart_id: cart.id}, headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: customer.id)}" }
+    it "return error" do
+      delete "/cart_items/#{0}", headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: customer.id)}" }
       expect(response).to have_http_status(:ok)
     end
   end

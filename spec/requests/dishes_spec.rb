@@ -8,7 +8,7 @@ RSpec.describe "Dishes", type: :request do
   category = FactoryBot.create(:category)
   dish = FactoryBot.create(:dish, category_id: category.id, restaurant_id: restaurant.id)
   customer = FactoryBot.create(:user, type: 'Customer')
-
+  user = FactoryBot.create(:user)
   let(:valid_jwt) { jwt_encode(user_id: user.id) }
 
   describe "GET /restaurants/:restaurant_id/dishes" do
@@ -17,7 +17,7 @@ RSpec.describe "Dishes", type: :request do
       expect(response).to have_http_status(:ok)
     end
     it "will show all dishes specific restaurant dishes" do
-      get "/restaurants/#{restaurant.id}/dishes", headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: owner.id)}" }
+      get "/restaurants/#{restaurant.id}/dishes", headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: customer.id)}" }
       expect(response).to have_http_status(:ok)
     end
   end
@@ -62,9 +62,18 @@ RSpec.describe "Dishes", type: :request do
       expect(response).to have_http_status(:ok)
     end
     it "will return error" do
-      # dish.id = nil
       delete "/restaurants/#{restaurant.id}/dishes/#{dish.id}" , headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: owner.id)}" }
       expect(response).to have_http_status(:ok)
     end
   end
+
+  describe "GET /dishes/search" do
+    it "will search dish by name" do
+      get "/dishes/search?name=Papita Shake", headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: user.id)}" }
+    end
+    it "will search dish by category" do
+      get "/dishes/search?category_id=1", headers: { 'Authorization' => "Bearer #{jwt_encode(user_id: user.id)}" }
+    end
+  end
+
 end

@@ -4,10 +4,9 @@ include JsonWebToken
 RSpec.describe "Restaurants", type: :request do
 
   let!(:owner) {FactoryBot.create(:user, type: 'Owner')}
+  let!(:customer) {FactoryBot.create(:user, type: 'Customer')}
   let!(:restaurant){ FactoryBot.create(:restaurant, user_id: owner.id) }
   let!(:user) { FactoryBot.create(:user) }
-  let!(:valid_jwt) { jwt_encode(user_id: user.id) }
-
 
   describe 'GET /restaurants' do #index API
     it "will show specific restaurante by owner" do
@@ -87,5 +86,4 @@ RSpec.describe "Restaurants", type: :request do
       expect(response).to have_http_status(:ok)
     end
   end
-
 end
